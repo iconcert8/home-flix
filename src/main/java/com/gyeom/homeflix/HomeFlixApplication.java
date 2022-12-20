@@ -12,6 +12,6 @@ public class HomeFlixApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(HomeFlixApplication.class, args);
-        log.info("Start Home-Flix");
+        log.info("Start Home-Flix. DDoo-Doong");
     }
 }

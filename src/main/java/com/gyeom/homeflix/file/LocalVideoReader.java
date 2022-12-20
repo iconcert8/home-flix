@@ -19,9 +19,7 @@ public class LocalVideoReader implements VideoReader {
 
     @Override
     public List<FileDTO> list(String... path) {
-        StringBuilder sb = new StringBuilder(".");
-        for(String p : path) sb.append("/").append(p);
-        File dir = new File(sb.toString());
+        File dir = new File(toSourcePath(path));
         if(dir.isFile()) return new ArrayList<>();
 
         LinkedList<FileDTO> result = new LinkedList<>();
@@ -38,6 +36,25 @@ public class LocalVideoReader implements VideoReader {
         return result;
     }
 
+    @Override
+    public boolean exists(String[] path) {
+        File file = new File(toSourcePath(path));
+        return file.exists();
+    }
+
+    @Override
+    public boolean isVideo(String[] path) {
+        File file = new File(toSourcePath(path));
+        return isVideo(file);
+    }
+
+    @Override
+    public String toSourcePath(String[] path) {
+        StringBuilder sb = new StringBuilder(".");
+        for(String p : path) sb.append("/").append(p);
+        return sb.toString();
+    }
+
     @Nullable
     private FileDTO toFileDTO(File file, String[] path){
         FileDTO dto = null;
@@ -46,16 +63,8 @@ public class LocalVideoReader implements VideoReader {
         dtoPath[path.length] = file.getName();
 
         if(file.isFile()){
-            try {
-                String type = Files.probeContentType(file.toPath());
-                if(type == null) return null;
-                if(type.equals(VIDEO_MIME_TYPE)){
-                    dto = new FileDTO(dtoPath, file.getName(), FileType.VIDEO);
-                }
-            } catch (IOException e) {
-                log.error("Files.probeContentType() method is error.");
-                log.error(e.getMessage());
-            }
+            if(!isVideo(file)) return null;
+            dto = new FileDTO(dtoPath, file.getName(), FileType.VIDEO);
         }
 
         if(file.isDirectory()){
@@ -64,4 +73,19 @@ public class LocalVideoReader implements VideoReader {
 
         return dto;
     }
+
+    private boolean isVideo(File file){
+        try {
+            String type = Files.probeContentType(file.toPath());
+            if(type == null) return false;
+            if(type.equals(VIDEO_MIME_TYPE)){
+                return true;
+            }
+        } catch (IOException e) {
+            log.error("Error at Files.probeContentType() method.");
+            log.error(e.getMessage());
+        }
+        return false;
+    }
+
 }

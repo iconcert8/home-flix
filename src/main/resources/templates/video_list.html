@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{basic_layout}">
+
+<th:block layout:fragment="head">
+    <title>Home-flix</title>
+    <!--    <link th:href="@{/css/common.css}" rel="stylesheet"/>-->
+</th:block>
+<body>
+<th:block layout:fragment="header" th:include="@{/header}"></th:block>
+
+<div layout:fragment="content" class="content">
+    <h2>This is Content</h2>
+    <h3 th:text="${path.orElse('null')}"></h3>
+</div>
+</body>
+</html>
