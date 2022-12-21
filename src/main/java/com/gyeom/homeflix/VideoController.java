@@ -15,13 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
-@SuppressWarnings("unused")
 public class VideoController {
 
     Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -29,7 +28,6 @@ public class VideoController {
 
     final VideoReader videoReader;
 
-    @SuppressWarnings("unused")
     public VideoController(@Qualifier(value = "localVideoReader") VideoReader videoReader){
         this.videoReader = videoReader;
     }
@@ -41,13 +39,12 @@ public class VideoController {
      *             "&&" is subpath like "/".
      */
     @GetMapping(value = {"/videos", "/videos/{path}"})
-    @SuppressWarnings("unused")
     public ResponseEntity<List<FileDTO>> list(@PathVariable(value = "path") Optional<String> path){
         try {
             if(path.isEmpty()) return ResponseEntity.ok().body(videoReader.list());
             return ResponseEntity.ok().body(videoReader.list(path.get().split(PATH_DELIMITER)));
         }catch (RuntimeException e){
-            return ResponseEntity.internalServerError().body(new ArrayList<>());
+            return ResponseEntity.internalServerError().body(Collections.emptyList());
         }
     }
 
@@ -56,10 +53,9 @@ public class VideoController {
      *
      * @param reqHeaders contains range of the file, etc.
      * @param path ex)"P1&&P2&&P3"
-     *             "&&" is subpath like "/".
+     *             "&&" is subpath character like "/".
      */
     @GetMapping(value = {"/video/{path}"}, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    @SuppressWarnings("unused")
     public ResponseEntity<ResourceRegion> stream(@RequestHeader HttpHeaders reqHeaders, @PathVariable(value = "path") String path) throws IOException {
         String[] ps = path.split(PATH_DELIMITER);
         if(!videoReader.exists(ps)) {log.error("Not exists file '{}'.", Arrays.toString(ps)); return ResponseEntity.notFound().build();}

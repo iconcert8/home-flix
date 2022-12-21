@@ -1,0 +1,11 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="directory_navigator (path)">
+    <span>/</span>
+    <a th:href="@{/screen/videos}" th:text="@{root}"></a>
+    <th:block th:each="p : ${path}">
+        <span>/</span>
+        <a th:href="@{/screen/videos/{dir}(dir=${p.urlVariable})}" th:text="${p.name}"></a>
+    </th:block>
+</div>
+</html>

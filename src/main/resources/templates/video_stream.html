@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{basic_layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${name}"></title>
 </head>
-<body>
 
+<body>
+<div layout:fragment="content" class="content">
+    <th:block th:insert="directory_navigator :: directory_navigator(${path})"></th:block>
+    <div>
+        <video th:src="@{/video/{dir}(dir=${streamUrl})}"
+               width="1280px" height="720px" controls autoplay></video>
+    </div>
+</div>
 </body>
 </html>

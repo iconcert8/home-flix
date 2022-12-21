@@ -3,17 +3,42 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{basic_layout}">
-
-<th:block layout:fragment="head">
+<head>
     <title>Home-flix</title>
+    <meta charset="UTF-8">
     <!--    <link th:href="@{/css/common.css}" rel="stylesheet"/>-->
-</th:block>
+</head>
+
 <body>
 <th:block layout:fragment="header" th:include="@{/header}"></th:block>
 
 <div layout:fragment="content" class="content">
-    <h2>This is Content</h2>
-    <h3 th:text="${path.orElse('null')}"></h3>
+    <th:block th:insert="directory_navigator :: directory_navigator(${path})"></th:block>
+    <table>
+        <thead>
+        <tr>
+            <th>TYPE</th>
+            <th>NAME</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${list.empty}">
+            <td colspan="2">--EMPTY--</td>
+        </tr>
+        <tr th:each="file : ${list}">
+            <th:block th:if="${file.type.toString().equals('FOLDER')}">
+                <td th:text="${file.type}"></td>
+                <td><a th:href="@{/screen/videos/{dir}(dir=${#strings.listJoin(file.path, '&&')})}"
+                       th:text="${file.name}"></a></td>
+            </th:block>
+            <th:block th:if="${file.type.toString().equals('VIDEO')}">
+                <td th:text="${file.type}"></td>
+                <td><a th:href="@{/screen/video/{dir}(dir=${#strings.listJoin(file.path, '&&')})}"
+                       th:text="${file.name}"></a></td>
+            </th:block>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>
