@@ -1,7 +1,7 @@
 package com.gyeom.homeflix;
 
-import com.gyeom.homeflix.file.FileDTO;
-import com.gyeom.homeflix.file.screenDTO.Path;
+import com.gyeom.homeflix.video.FileDTO;
+import com.gyeom.homeflix.video.screenDTO.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,6 +26,14 @@ public class ScreenController {
     private final VideoController videoController;
     public ScreenController(VideoController videoController){
         this.videoController = videoController;
+    }
+
+    @GetMapping(value = "/login")
+    public ModelAndView goLogin(){
+        final String VIEW_LOGIN = "login.html";
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName(VIEW_LOGIN);
+        return mv;
     }
 
     @GetMapping(value = {"/videos", "/videos/{path}"})

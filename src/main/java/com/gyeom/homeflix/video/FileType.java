@@ -1,4 +1,4 @@
-package com.gyeom.homeflix.file;
+package com.gyeom.homeflix.video;
 
 public enum FileType {
     FOLDER,

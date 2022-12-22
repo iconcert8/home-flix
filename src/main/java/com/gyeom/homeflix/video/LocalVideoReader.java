@@ -1,4 +1,4 @@
-package com.gyeom.homeflix.file;
+package com.gyeom.homeflix.video;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

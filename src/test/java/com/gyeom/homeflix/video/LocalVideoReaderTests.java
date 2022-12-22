@@ -1,4 +1,4 @@
-package com.gyeom.homeflix.file;
+package com.gyeom.homeflix.video;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

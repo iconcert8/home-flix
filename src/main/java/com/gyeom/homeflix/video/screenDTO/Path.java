@@ -1,4 +1,4 @@
-package com.gyeom.homeflix.file.screenDTO;
+package com.gyeom.homeflix.video.screenDTO;
 
 public class Path {
     private String urlVariable;
