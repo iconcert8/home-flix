@@ -8,14 +8,16 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class LocalVideoReader implements VideoReader {
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
-    public static final String VIDEO_MIME_TYPE = "video/mp4";
+    public static final Set<String> VIDEO_MIME_TYPE_SET = new HashSet<>(){{
+        add("video/mp4"); //.mp4
+//        add("video/x-msvideo"); add("video/avi"); //.avi, Web does not support.
+        add("video/x-matroska"); //.mkv
+    }};
 
     @Override
     public List<FileDTO> list(String... path) {
@@ -78,7 +80,7 @@ public class LocalVideoReader implements VideoReader {
         try {
             String type = Files.probeContentType(file.toPath());
             if(type == null) return false;
-            if(type.equals(VIDEO_MIME_TYPE)){
+            if(VIDEO_MIME_TYPE_SET.contains(type)){
                 return true;
             }
         } catch (IOException e) {

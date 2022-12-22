@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.*;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,6 +71,30 @@ public class VideoController {
                 .contentType(MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM))
                 .body(resourceRegion);
     }
+
+    /**
+     * Response video subtitle file. only VTT file.
+     *
+     * @param path like "path1&&video.mp4".
+     *             Find same name in "path/video.vtt".
+     */
+    @GetMapping(value = {"/video/subtitle/{path}"})
+    public ResponseEntity<InputStreamResource> subtitle(@PathVariable("path") String path){
+        String[] splitPath = path.split(VideoController.PATH_DELIMITER);
+        String filename = splitPath[splitPath.length-1];
+        if(filename.lastIndexOf('.') == -1) return ResponseEntity.noContent().build();
+
+        splitPath[splitPath.length - 1] = filename.substring(0, filename.lastIndexOf('.')) + ".vtt";;
+
+        File file = new File(videoReader.toSourcePath(splitPath));
+        if(!file.exists()) return ResponseEntity.noContent().build();
+        try {
+            return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(new InputStreamResource(new FileInputStream(file)));
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 
     private ResourceRegion resourceRegion(Resource video, HttpHeaders httpHeaders) throws IOException {
         final long chunkSize = 1000000L;

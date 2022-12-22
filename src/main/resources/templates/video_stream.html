@@ -12,7 +12,9 @@
     <th:block th:insert="directory_navigator :: directory_navigator(${path})"></th:block>
     <div>
         <video th:src="@{/video/{dir}(dir=${streamUrl})}"
-               width="1280px" height="720px" controls autoplay></video>
+               width="1280px" height="720px" controls autoplay>
+            <track default th:src="@{/video/subtitle/{dir}(dir=${streamUrl})}"/>
+        </video>
     </div>
 </div>
 </body>
