@@ -1,5 +1,6 @@
 package com.gyeom.homeflix;
 
+import com.gyeom.homeflix.login.JwtProperties;
 import com.gyeom.homeflix.video.FileDTO;
 import com.gyeom.homeflix.video.screenDTO.Path;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +48,11 @@ public class ScreenController {
     }
 
     @GetMapping(value = {"/videos", "/videos/{path}"})
-    public ModelAndView goScreenVideos(@PathVariable("path") Optional<String> path){
+    public ModelAndView goScreenVideos(@PathVariable("path") Optional<String> path, HttpServletRequest request){
+        if(request.getAttribute(JwtProperties.REQUIERED_LOGIN) != null){
+            return goLoginOnFail();
+        }
+
         final String KEY_PATH = "path";
         final String KEY_LIST = "list";
         final String VIEW_VIDEO_LIST = "video_list.html";
@@ -59,7 +65,11 @@ public class ScreenController {
     }
 
     @GetMapping(value = {"/video/{path}"})
-    public  ModelAndView goScreenStream(@PathVariable("path") String path){
+    public  ModelAndView goScreenStream(@PathVariable("path") String path, HttpServletRequest request){
+        if(request.getAttribute(JwtProperties.REQUIERED_LOGIN) != null){
+            return goLoginOnFail();
+        }
+
         final String VIEW_VIDEO_STREAM = "video_stream.html";
         final String KEY_STREAMURL = "streamUrl";
         final String KEY_PATH = "path";

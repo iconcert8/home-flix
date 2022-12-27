@@ -23,9 +23,13 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public static Collection<? extends GrantedAuthority> defaultAuthorities() {
+        return new ArrayList<>(){{add(new SimpleGrantedAuthority("user"));}};
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>(){{add(new SimpleGrantedAuthority("user"));}};
+        return defaultAuthorities();
     }
 
     @Override

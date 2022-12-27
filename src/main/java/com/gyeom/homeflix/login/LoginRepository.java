@@ -7,5 +7,7 @@ public interface LoginRepository {
     @Nullable
     User findByUsername(String username);
 
-    void insertRefreshToken(String username, String refreshToken);
+    void upsertRefreshToken(String refreshToken, TokenInfo tokenInfo);
+
+//    TokenInfo findByRefreshToken()
 }

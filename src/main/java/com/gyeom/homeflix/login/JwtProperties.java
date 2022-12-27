@@ -23,6 +23,9 @@ public class JwtProperties {
     public void setREFRESH_TOKEN_EXPIRATION_TIME(long value){JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME = value;}
     public static final String ACCESS_TOKEN_HEADER = "access_token";
     public static final String REFRESH_TOKEN_HEADER = "refresh_token";
-    public static final String TOKEN_HEADER_PREFIX = "Bearer ";
+    public static final String TOKEN_HEADER_PREFIX = "Bearer";
     public static final String TOKEN_AUTH = "auth";
+    public static final String ACCESS_EXPIRTE_DATE = "access_token_expire_date";
+
+    public static final String REQUIERED_LOGIN = "requiered_login";
 }

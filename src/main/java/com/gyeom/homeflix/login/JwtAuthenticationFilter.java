@@ -9,9 +9,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Optional;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -25,22 +29,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. Request Header 에서 JWT 토큰 추출
-        String token = resolveToken(request);
+        // 1. Request Header or Cookie 에서 JWT 토큰 추출
+//        String token = resolveToken(request);
+        String token = null;
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null){
+            Optional<Cookie> accessTokenCookie = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(JwtProperties.ACCESS_TOKEN_HEADER)).findFirst();
+            if(accessTokenCookie.isPresent()){
+               token = accessTokenCookie.get().getValue();
+            }
+        }
 
         // 2. validateToken 으로 토큰 유효성 검사
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            saveSecurityContext(token);
         }
+        // if expired accessToken. refresh.
+        else{
+            if(cookies != null){
+                Optional<Cookie> refreshTokenCookie = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(JwtProperties.REFRESH_TOKEN_HEADER)).findFirst();
+                if(refreshTokenCookie.isPresent()) {
+                    String refreshToken = refreshTokenCookie.get().getValue();
+                    String accessToken = jwtTokenProvider.generateAccessToken(jwtTokenProvider.parseSubject(refreshToken), User.defaultAuthorities());
+                    response.addCookie(JwtTokenProvider.createAccessTokenCookie(accessToken));
+                    response.addCookie(JwtTokenProvider.createAccessTokenExpireTimeCookie(new Date(new Date().getTime()+JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME)));
+                    saveSecurityContext(accessToken);
+                }
+                // refresh token is empty
+                else{
+                    request.setAttribute(JwtProperties.REQUIERED_LOGIN, true);
+                }
+            }
+        }
+
         filterChain.doFilter(request, response);
     }
 
-//    @Override
-//    protected boolean shouldNotFilter(HttpServletRequest request) {
-//        return request.getServletPath().equals("/login");
-//    }
+    private void saveSecurityContext(String accessToken){
+        // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 
     // Request Header 에서 토큰 정보 추출
     private String resolveToken(HttpServletRequest request) {

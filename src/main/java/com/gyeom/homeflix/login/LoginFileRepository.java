@@ -37,8 +37,36 @@ public class LoginFileRepository implements LoginRepository{
     }
 
     @Override
-    public void insertRefreshToken(String username, String refreshToken) {
-        //TODO: LoginFileRepository inserRefreshToken
+    public void upsertRefreshToken(String refreshToken, TokenInfo tokenInfo) {
+//        File file = new File("./"+REFRESHTOKENS_FILE_NAME);
+//        if(!file.exists()){
+//            try {
+//                //noinspection ResultOfMethodCallIgnored
+//                file.createNewFile();
+//            } catch (IOException e) {
+//                log.error("Can't not create USERS file. '" + file.getName() +"'");
+//            }
+//
+//            try (FileWriter fw = new FileWriter(file); BufferedWriter bw = new BufferedWriter(fw);) {
+//                JsonArray json = new JsonArray();
+//                bw.write(json.toString());
+//            } catch (IOException e) {
+//                log.error("Can't not write default user to USERS file. '" + file.getName() +"'");
+//            }
+//        }
+//
+//        StringBuilder stringBuilder = new StringBuilder();
+//        try (FileReader fr = new FileReader(file); BufferedReader br = new BufferedReader(fr);) {
+//            String str = null;
+//            while ((str = br.readLine()) != null) {
+//                stringBuilder.append(str);
+//            }
+//        } catch (IOException e) {
+//            log.error("Can't not read USERS file '"+file.getName()+"'");
+//        }
+//
+//        JsonArray json = JsonParser.parseString(stringBuilder.toString()).getAsJsonArray();
+//        Map<String, TokenInfo>
     }
 
     /**

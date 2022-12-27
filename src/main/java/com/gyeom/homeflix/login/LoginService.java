@@ -52,6 +52,11 @@ public class LoginService implements UserDetailsService {
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         return tokenProvider.generateToken(authentication);
-
     }
+
+    public String refreshAccessToken(String refreshToken){
+        String username = tokenProvider.parseSubject(refreshToken);
+        return tokenProvider.generateAccessToken(username, User.defaultAuthorities());
+    }
+
 }

@@ -1,7 +1,5 @@
 package com.gyeom.homeflix;
 
-import com.gyeom.homeflix.login.AuthFailureHandler;
-import com.gyeom.homeflix.login.AuthSuccessHandler;
 import com.gyeom.homeflix.login.JwtAuthenticationFilter;
 import com.gyeom.homeflix.login.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
@@ -17,16 +15,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig{
 
-    public static String[] ALLOW_URLS = {"/", "/screen/login/**", "/login/**", "/favicon.ico"};
-    private final AuthSuccessHandler authSuccessHandler;
-    private final AuthFailureHandler authFailureHandler;
-
+    public static String[] ALLOW_URLS = {"/**", /*"/", "/screen/login/**", "/login/**", "/favicon.ico", "/video/**", "/refresh_token"*/};
     private final JwtTokenProvider tokenProvider;
 
-    public WebSecurityConfig(JwtTokenProvider tokenProvider, AuthSuccessHandler authSuccessHandler, AuthFailureHandler authFailureHandler){
+    public WebSecurityConfig(JwtTokenProvider tokenProvider){
         this.tokenProvider = tokenProvider;
-        this.authSuccessHandler = authSuccessHandler;
-        this.authFailureHandler = authFailureHandler;
     }
 
     @Bean
@@ -44,22 +37,6 @@ public class WebSecurityConfig{
         http.addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-
-//        http
-//                .authorizeHttpRequests((requests) -> requests
-//                        .mvcMatchers(ALLOW_URLS).permitAll() // allow this urls.
-//                        .anyRequest().authenticated() // not allow other urls.
-//                )
-//                .formLogin((form) -> form
-//                        .loginPage("/screen/login")
-//                        .loginProcessingUrl("/login/process") //Front-end request url for login.
-//                        .successHandler(authSuccessHandler)
-//                        .failureHandler(authFailureHandler)
-//                )
-//                //TODO: logout handle.
-//                .logout(LogoutConfigurer::permitAll);
-//
-//        return http.build();
     }
 
 }

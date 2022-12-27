@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,32 +39,54 @@ public class JwtTokenProvider {
     public TokenInfo generateToken(Authentication authentication){
         Date nowDate = new Date();
         long now = nowDate.getTime();
+        Date expireDate = new Date(now + JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME);
 
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
         //Access Token
-        String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(JwtProperties.TOKEN_AUTH, authorities)
-                .setIssuedAt(nowDate)
-                .setExpiration(new Date(now + JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact();
+        String accessToken = generateAccessToken(authentication);
 
         //Refresh Token
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME))
+                .setSubject(authentication.getName()) // TODO: remove setSubject(). after save refreshToken in DB.
+//                .setExpiration(new Date(now + JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME)) // TODO: enable setExpiration().
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
 
-        return new TokenInfo(JwtProperties.TOKEN_HEADER_PREFIX, accessToken, refreshToken);
+        return new TokenInfo(accessToken, refreshToken, expireDate, authentication.getName());
+    }
+
+    public String generateAccessToken(Authentication authentication){
+        return generateAccessToken(authentication.getName(), authentication.getAuthorities());
+    }
+
+    public String generateAccessToken(String username, Collection<? extends GrantedAuthority> authorities){
+        Date nowDate = new Date();
+        long now = nowDate.getTime();
+        Date expireDate = new Date(now + JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME);
+
+        String authority = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        //Access Token
+        String accessToken = Jwts.builder()
+                .setSubject(username)
+                .claim(JwtProperties.TOKEN_AUTH, authority)
+                .setIssuedAt(nowDate)
+                .setExpiration(expireDate)
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
+
+        return accessToken;
     }
 
     // Decode JWT token and extract info in token.
     public Authentication getAuthentication(String accessToken) {
         // decode token
         Claims claims = parseClaims(accessToken);
+
+        if(claims.getSubject() == null){
+            throw new RuntimeException("Not exists subject in token");
+        }
 
         if (claims.get(JwtProperties.TOKEN_AUTH) == null) {
             throw new RuntimeException("Not exists authority in token");
@@ -74,7 +97,6 @@ public class JwtTokenProvider {
                 Arrays.stream(claims.get(JwtProperties.TOKEN_AUTH).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-
 
         // create UserDetails object and return authentication
         UserDetails principal = new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authorities);
@@ -105,4 +127,34 @@ public class JwtTokenProvider {
             return e.getClaims();
         }
     }
+
+    public String parseSubject(String token){
+        try{
+            return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody().getSubject();
+        }catch (ExpiredJwtException e){
+            log.warn("Can't not parse subject in token");
+            throw e;
+        }
+    }
+
+    public static Cookie createAccessTokenCookie(String accessToken){
+        Cookie accessTokenCookie = new Cookie(JwtProperties.ACCESS_TOKEN_HEADER, accessToken);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge((int)(JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME/1000) + 5);
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setHttpOnly(true);
+
+        return accessTokenCookie;
+    }
+
+    public static Cookie createAccessTokenExpireTimeCookie(Date date){
+        Cookie accessExpireTimeCookie = new Cookie(JwtProperties.ACCESS_EXPIRTE_DATE, String.valueOf(date.getTime()));
+        accessExpireTimeCookie.setPath("/");
+        accessExpireTimeCookie.setMaxAge((int)(JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME/1000) + 5);
+        accessExpireTimeCookie.setSecure(true);
+        accessExpireTimeCookie.setHttpOnly(true);
+
+        return accessExpireTimeCookie;
+    }
+
 }

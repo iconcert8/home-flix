@@ -44,8 +44,7 @@
             (res)=> res.json()
         )
         .then(
-            (data)=>{
-            }
+            (data)=>{goVideos();}
         )
         .catch(
             (err)=>{goFail();}
@@ -56,6 +55,26 @@
         let url = '/screen/login/fail';
         window.location.href = url;
     }
+
+    function goVideos(){
+        let url = '/screen/videos';
+        window.location.href = url;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
