@@ -28,11 +28,20 @@ public class ScreenController {
         this.videoController = videoController;
     }
 
-    @GetMapping(value = "/login")
+    @GetMapping(value = {"/login"})
     public ModelAndView goLogin(){
         final String VIEW_LOGIN = "login.html";
         ModelAndView mv = new ModelAndView();
         mv.setViewName(VIEW_LOGIN);
+        return mv;
+    }
+
+    @GetMapping(value = {"/login/fail"})
+    public ModelAndView goLoginOnFail(){
+        final String KEY_FAIL = "fail";
+        ModelAndView mv = goLogin();
+        mv.addObject(KEY_FAIL, true);
+
         return mv;
     }
 

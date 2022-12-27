@@ -1,0 +1,24 @@
+# Server config
+server:
+  port: 5369
+  servlet:
+    encoding:
+      charset: UTF-8
+# Apply as soon as Static Resources change.
+spring:
+  devtools:
+    livereload:
+      enabled: true
+  # Thymeleaf reference path.
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    # Use thymeleaf cache.
+    cache: false
+    # Throw error at templates file not exists.
+    check-template-location: true
+
+jwt:
+  secret: "TjarB28fS3R5siqyGYvqAQUgFfCasf7AKERkWrg5GudM"
+  access-token-expireTime: 7200000 #2hours
+  refresh-token-expireTime: 2592000000 #30days

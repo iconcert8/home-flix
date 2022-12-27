@@ -6,4 +6,6 @@ public interface LoginRepository {
 
     @Nullable
     User findByUsername(String username);
+
+    void insertRefreshToken(String username, String refreshToken);
 }

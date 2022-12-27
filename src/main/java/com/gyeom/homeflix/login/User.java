@@ -1,8 +1,10 @@
 package com.gyeom.homeflix.login;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class User implements UserDetails {
@@ -13,6 +15,7 @@ public class User implements UserDetails {
     private String username;
     private String password;
 
+//    private Collection<? extends GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList();
     public User(){}
 
     public User(String username, String password) {
@@ -22,16 +25,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return new ArrayList<>(){{add(new SimpleGrantedAuthority("user"));}};
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
     @Override
     public String getPassword() {
         return this.password;

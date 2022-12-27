@@ -1,14 +1,17 @@
 package com.gyeom.homeflix;
 
+import com.gyeom.homeflix.login.JwtProperties;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+@SpringBootTest
 public class EtcTests {
     Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -44,5 +47,12 @@ public class EtcTests {
             log.error(e.getMessage());
         }
         log.info(type);
+    }
+
+    @Test
+    public void staticValueInject(){
+        log.info(JwtProperties.SECRET);
+        log.info(String.valueOf(JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME));
+        log.info(String.valueOf(JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME));
     }
 }

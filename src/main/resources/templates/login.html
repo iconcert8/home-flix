@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{basic_layout}">
 <head>
@@ -9,7 +10,60 @@
 
 <body>
 <div layout:fragment="content" class="content">
-    Login Page
+    <div>
+        <label for="username">ID: </label>
+        <input type="text" name="username" id="username" required>
+    </div>
+    <div>
+        <label for="password">PASSWORD: </label>
+        <input type="password" name="password" id="password" required>
+    </div>
+    <div>
+        <button type="button" onclick="login()">HOME-FLIX START</button>
+    </div>
+    <!--    </form>-->
+    <span th:if="${fail != null}" th:text="@{FAILED}"></span>
 </div>
 </body>
+<script>
+    function login(){
+        let url = '/login';
+        let req = {
+            'username' : document.getElementById("username").value,
+            'password' : document.getElementById('password').value,
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(req),
+        })
+        .then(
+            (res)=> res.json()
+        )
+        .then(
+            (data)=>{
+            }
+        )
+        .catch(
+            (err)=>{goFail();}
+        );
+    }
+
+    function goFail(){
+        let url = '/screen/login/fail';
+        window.location.href = url;
+    }
+
+
+
+
+
+
+
+
+
+</script>
 </html>

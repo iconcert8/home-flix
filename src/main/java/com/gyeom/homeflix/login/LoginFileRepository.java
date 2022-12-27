@@ -1,12 +1,10 @@
 package com.gyeom.homeflix.login;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -20,9 +18,15 @@ public class LoginFileRepository implements LoginRepository{
 
     Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
+    private final PasswordEncoder passwordEncoder;
     public static final String USERS_FILE_NAME = "home-flix-users.json";
+    public static final String REFRESHTOKENS_FILE_NAME = "home-flix-refresh-tokens.json";
     public static final String DEFAULT_USERNAME = "admin";
     public static final String DEFAULT_PASSWORD = "1234";
+
+    public LoginFileRepository(PasswordEncoder passwordEncoder){
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Nullable
     @Override
@@ -30,6 +34,11 @@ public class LoginFileRepository implements LoginRepository{
         Map<String, User> users = getUsers();
         if(users.containsKey(username)) return users.get(username);
         return null;
+    }
+
+    @Override
+    public void insertRefreshToken(String username, String refreshToken) {
+        //TODO: LoginFileRepository inserRefreshToken
     }
 
     /**
@@ -73,7 +82,9 @@ public class LoginFileRepository implements LoginRepository{
             try (FileWriter fw = new FileWriter(file); BufferedWriter bw = new BufferedWriter(fw);) {
                 JsonArray json = new JsonArray();
                 json.add(userToJson(new User(DEFAULT_USERNAME, DEFAULT_PASSWORD)));
-                bw.write(json.toString());
+                bw.write(new GsonBuilder()
+                        .setPrettyPrinting()
+                        .create().toJson(json));
             } catch (IOException e) {
                 log.error("Can't not write default user to USERS file. '" + file.getName() +"'");
                 return null;
@@ -82,6 +93,7 @@ public class LoginFileRepository implements LoginRepository{
 
         return file;
     }
+
 
     private JsonObject userToJson(User user){
         JsonObject json = new JsonObject();
@@ -93,10 +105,7 @@ public class LoginFileRepository implements LoginRepository{
     private User jsonToUser(JsonObject json){
         String username = json.getAsJsonPrimitive(User.STR_USERNAME).getAsString();
         String password = json.getAsJsonPrimitive(User.STR_PASSWORD).getAsString();
-        return new User(username, password);
-//        User user = new User();
-//        user.setUsername(username);
-//        return user;
+        return new User(username, passwordEncoder.encode(password));
     }
 
     private List<User> jsonToUsers(String jsonStr){
