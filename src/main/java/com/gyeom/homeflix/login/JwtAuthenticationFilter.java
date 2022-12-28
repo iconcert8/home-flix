@@ -28,7 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         // 1. Request Header or Cookie 에서 JWT 토큰 추출
 //        String token = resolveToken(request);
         String token = null;
@@ -55,10 +54,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     response.addCookie(JwtTokenProvider.createAccessTokenExpireTimeCookie(new Date(new Date().getTime()+JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME)));
                     saveSecurityContext(accessToken);
                 }
-                // refresh token is empty
                 else{
+                    // refresh-token is empty. should go to the login page.
                     request.setAttribute(JwtProperties.REQUIERED_LOGIN, true);
                 }
+            }else{
+                // refresh-token is empty. should go to the login page.
+                request.setAttribute(JwtProperties.REQUIERED_LOGIN, true);
             }
         }
 

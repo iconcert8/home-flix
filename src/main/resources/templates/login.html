@@ -6,25 +6,48 @@
 <head>
     <title>Home-flix</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 </head>
 
-<body>
-<div layout:fragment="content" class="content">
-    <div>
-        <label for="username">ID: </label>
-        <input type="text" name="username" id="username" required>
+<body style="background-color:black" class="m-5">
+<div>
+    <div class="mb-5 d-flex justify-content-center">
+        <img src="/img/HOMEFLIX-SOOBIN.png" class="img-fluid" alt="home-flix image">
     </div>
-    <div>
-        <label for="password">PASSWORD: </label>
-        <input type="password" name="password" id="password" required>
+    <div th:if="${fail != null}" class="d-flex justify-content-center">
+        <i class="bi bi-slash-circle text-danger"></i>
+        <span class="text-danger">Failed</span>
     </div>
-    <div>
-        <button type="button" onclick="login()">HOME-FLIX START</button>
+    <div layout:fragment="content">
+        <div>
+            <div class="input-group mb-3">
+                <i class="bi bi-person-fill input-group-text">NAME</i>
+                <input type="text" class="form-control" placeholder="username" aria-label="username"
+                       aria-describedby="username" id="username"
+                >
+            </div>
+        </div>
+        <div>
+            <div class="input-group mb-3">
+                <i class="bi bi-file-lock-fill input-group-text">PASS</i>
+                <input type="password" class="form-control" placeholder="password" aria-label="password"
+                       aria-describedby="password" id="password"
+                >
+            </div>
+        </div>
+        <div class="d-grid">
+            <button class="btn btn-danger" type="button" onclick="login()">HOME-FLIX START</button>
+        </div>
+        <!--    </form>-->
+
     </div>
-    <!--    </form>-->
-    <span th:if="${fail != null}" th:text="@{FAILED}"></span>
 </div>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
 <script>
     function login(){
         let url = '/login';
@@ -84,5 +107,64 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
+</body>
+
+
 </html>

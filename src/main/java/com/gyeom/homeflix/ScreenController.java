@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.Optional;
 @RequestMapping(value = "screen")
 public class ScreenController {
 
-    Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     private final VideoController videoController;
     public ScreenController(VideoController videoController){
@@ -31,17 +33,33 @@ public class ScreenController {
     }
 
     @GetMapping(value = {"/login"})
-    public ModelAndView goLogin(){
+    public ModelAndView goLogin(HttpServletResponse response){
         final String VIEW_LOGIN = "login.html";
         ModelAndView mv = new ModelAndView();
         mv.setViewName(VIEW_LOGIN);
+
+        Cookie refreshCookie = new Cookie(JwtProperties.REFRESH_TOKEN_HEADER, null);
+        refreshCookie.setMaxAge(0); // 쿠키의 expiration 타임을 0으로 하여 없앤다.
+        refreshCookie.setPath("/"); // 모든 경로에서 삭제 됬음을 알린다.
+        response.addCookie(refreshCookie);
+
+        Cookie accessCookie = new Cookie(JwtProperties.ACCESS_TOKEN_HEADER, null);
+        accessCookie.setMaxAge(0);
+        accessCookie.setPath("/");
+        response.addCookie(accessCookie);
+
+        Cookie accessExpireCookie = new Cookie(JwtProperties.ACCESS_EXPIRTE_DATE, null);
+        accessExpireCookie.setMaxAge(0);
+        accessExpireCookie.setPath("/");
+        response.addCookie(accessExpireCookie);
+
         return mv;
     }
 
     @GetMapping(value = {"/login/fail"})
-    public ModelAndView goLoginOnFail(){
+    public ModelAndView goLoginOnFail(HttpServletResponse response){
         final String KEY_FAIL = "fail";
-        ModelAndView mv = goLogin();
+        ModelAndView mv = goLogin(response);
         mv.addObject(KEY_FAIL, true);
 
         return mv;
@@ -49,10 +67,6 @@ public class ScreenController {
 
     @GetMapping(value = {"/videos", "/videos/{path}"})
     public ModelAndView goScreenVideos(@PathVariable("path") Optional<String> path, HttpServletRequest request){
-        if(request.getAttribute(JwtProperties.REQUIERED_LOGIN) != null){
-            return goLoginOnFail();
-        }
-
         final String KEY_PATH = "path";
         final String KEY_LIST = "list";
         final String VIEW_VIDEO_LIST = "video_list.html";
@@ -66,10 +80,6 @@ public class ScreenController {
 
     @GetMapping(value = {"/video/{path}"})
     public  ModelAndView goScreenStream(@PathVariable("path") String path, HttpServletRequest request){
-        if(request.getAttribute(JwtProperties.REQUIERED_LOGIN) != null){
-            return goLoginOnFail();
-        }
-
         final String VIEW_VIDEO_STREAM = "video_stream.html";
         final String KEY_STREAMURL = "streamUrl";
         final String KEY_PATH = "path";

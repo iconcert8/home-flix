@@ -6,39 +6,42 @@
 <head>
     <title>Home-flix</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <!--    <link th:href="@{/css/common.css}" rel="stylesheet"/>-->
 </head>
 
-<body>
-<th:block layout:fragment="header" th:include="@{/header}"></th:block>
-
-<div layout:fragment="content" class="content">
+<body style="background-color:black" class="m-5">
+<div layout:fragment="content">
+    <div class="mx-5 my-5 d-flex justify-content-center">
+        <img src="/img/HOMEFLIX.png" class="img-fluid" alt="home-flix image">
+    </div>
     <th:block th:insert="directory_navigator :: directory_navigator(${path})"></th:block>
-    <table>
-        <thead>
-        <tr>
-            <th>TYPE</th>
-            <th>NAME</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${list.empty}">
-            <td colspan="2">--EMPTY--</td>
-        </tr>
-        <tr th:each="file : ${list}">
-            <th:block th:if="${file.type.toString().equals('FOLDER')}">
-                <td th:text="${file.type}"></td>
-                <td><a th:href="@{/screen/videos/{dir}(dir=${#strings.listJoin(file.path, '&&')})}"
-                       th:text="${file.name}"></a></td>
-            </th:block>
-            <th:block th:if="${file.type.toString().equals('VIDEO')}">
-                <td th:text="${file.type}"></td>
-                <td><a th:href="@{/screen/video/{dir}(dir=${#strings.listJoin(file.path, '&&')})}"
-                       th:text="${file.name}"></a></td>
-            </th:block>
-        </tr>
-        </tbody>
-    </table>
+    <th:block th:if="${list.empty}">
+        <i class="bi bi-cart-x-fill">Empty</i>
+    </th:block>
+    <th:block th:each="file : ${list}">
+        <th:block th:if="${file.type.toString().equals('FOLDER')}">
+            <div class="my-3">
+                <i class="bi bi-folder text-light"></i>
+                <a class="text-light" th:href="@{/screen/videos/{dir}(dir=${#strings.listJoin(file.path, '&&')})}"
+                   th:text="${file.name}" style="text-decoration:none"></a>
+            </div>
+        </th:block>
+        <th:block th:if="${file.type.toString().equals('VIDEO')}">
+            <div class="my-3">
+                <i class="bi bi-camera-video text-danger"></i>
+                <a class="text-light" th:href="@{/screen/video/{dir}(dir=${#strings.listJoin(file.path, '&&')})}"
+                   th:text="${file.name}" style="text-decoration:none"></a>
+            </div>
+        </th:block>
+    </th:block>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
 </body>
 </html>

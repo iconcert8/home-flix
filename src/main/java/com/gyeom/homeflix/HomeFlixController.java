@@ -43,8 +43,8 @@ public class HomeFlixController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequestDTO requestDTO, HttpServletResponse response) {
-
         Map<String, Object> body = new HashMap<>();
+
         try{
             TokenInfo tokenInfo = loginService.login(requestDTO.getUsername(), requestDTO.getPassword());
 
