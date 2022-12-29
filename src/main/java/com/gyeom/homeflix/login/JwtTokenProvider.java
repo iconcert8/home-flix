@@ -141,7 +141,7 @@ public class JwtTokenProvider {
         Cookie accessTokenCookie = new Cookie(JwtProperties.ACCESS_TOKEN_HEADER, accessToken);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge((int)(JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME/1000) + 5);
-        accessTokenCookie.setSecure(true);
+//        accessTokenCookie.setSecure(true); // https에서 사용하는 옵션
         accessTokenCookie.setHttpOnly(true);
 
         return accessTokenCookie;
@@ -151,7 +151,7 @@ public class JwtTokenProvider {
         Cookie accessExpireTimeCookie = new Cookie(JwtProperties.ACCESS_EXPIRTE_DATE, String.valueOf(date.getTime()));
         accessExpireTimeCookie.setPath("/");
         accessExpireTimeCookie.setMaxAge((int)(JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME/1000) + 5);
-        accessExpireTimeCookie.setSecure(true);
+//        accessExpireTimeCookie.setSecure(true); // https에서 사용하는 옵션
         accessExpireTimeCookie.setHttpOnly(true);
 
         return accessExpireTimeCookie;

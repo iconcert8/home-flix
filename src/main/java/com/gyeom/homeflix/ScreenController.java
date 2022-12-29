@@ -41,17 +41,18 @@ public class ScreenController {
         Cookie refreshCookie = new Cookie(JwtProperties.REFRESH_TOKEN_HEADER, null);
         refreshCookie.setMaxAge(0); // 쿠키의 expiration 타임을 0으로 하여 없앤다.
         refreshCookie.setPath("/"); // 모든 경로에서 삭제 됬음을 알린다.
-        response.addCookie(refreshCookie);
 
         Cookie accessCookie = new Cookie(JwtProperties.ACCESS_TOKEN_HEADER, null);
         accessCookie.setMaxAge(0);
         accessCookie.setPath("/");
-        response.addCookie(accessCookie);
 
         Cookie accessExpireCookie = new Cookie(JwtProperties.ACCESS_EXPIRTE_DATE, null);
         accessExpireCookie.setMaxAge(0);
         accessExpireCookie.setPath("/");
-        response.addCookie(accessExpireCookie);
+
+//        response.addCookie(refreshCookie);
+//        response.addCookie(accessCookie);
+//        response.addCookie(accessExpireCookie);
 
         return mv;
     }

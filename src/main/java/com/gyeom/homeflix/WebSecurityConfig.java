@@ -31,6 +31,8 @@ public class WebSecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // csrf disable: read 요청밖에 없기 때문에 CSRF(Cross Site Request Forgery)걱정은 안해도 된다.
+        // 난수를 생성해 다음 요청때 난수를 같이 포함하여 요청하도록 한다.
         http.csrf().disable()
                 .authorizeRequests().antMatchers(ALLOW_URLS).permitAll()
                 .anyRequest().authenticated();

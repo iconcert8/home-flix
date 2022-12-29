@@ -51,7 +51,7 @@ public class HomeFlixController {
             Cookie refreshTokenCookie = new Cookie(JwtProperties.REFRESH_TOKEN_HEADER, tokenInfo.getRefreshToken());
 //            refreshTokenCookie.setMaxAge((int)(JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME/1000));
             refreshTokenCookie.setPath("/");
-            refreshTokenCookie.setSecure(true);
+//            refreshTokenCookie.setSecure(true); // https에서 사용하는 옵션
             refreshTokenCookie.setHttpOnly(true);
 
             response.addCookie(refreshTokenCookie);
