@@ -1,10 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="directory_navigator (path)">
-    <span class="text-light">/</span>
+    <span class="text-dark">/</span>
     <a class="text-info" style="text-decoration:none" th:href="@{/screen/videos}" th:text="@{root}"></a>
     <th:block th:each="p : ${path}">
-        <span class="text-light">/</span>
+        <span class="text-dark">/</span>
         <a class="text-info" style="text-decoration:none" th:href="@{/screen/videos/{dir}(dir=${p.urlVariable})}"
            th:text="${p.name}"></a>
     </th:block>
