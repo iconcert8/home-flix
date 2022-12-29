@@ -48,11 +48,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if(cookies != null){
                 Optional<Cookie> refreshTokenCookie = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(JwtProperties.REFRESH_TOKEN_HEADER)).findFirst();
                 if(refreshTokenCookie.isPresent()) {
-                    String refreshToken = refreshTokenCookie.get().getValue();
-                    String accessToken = jwtTokenProvider.generateAccessToken(jwtTokenProvider.parseSubject(refreshToken), User.defaultAuthorities());
-                    response.addCookie(JwtTokenProvider.createAccessTokenCookie(accessToken));
-                    response.addCookie(JwtTokenProvider.createAccessTokenExpireTimeCookie(new Date(new Date().getTime()+JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME)));
-                    saveSecurityContext(accessToken);
+                    try{
+                        String refreshToken = refreshTokenCookie.get().getValue();
+                        String accessToken = jwtTokenProvider.generateAccessToken(jwtTokenProvider.parseSubject(refreshToken), User.defaultAuthorities());
+                        response.addCookie(JwtTokenProvider.createAccessTokenCookie(accessToken));
+                        response.addCookie(JwtTokenProvider.createAccessTokenExpireTimeCookie(new Date(new Date().getTime()+JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME)));
+                        saveSecurityContext(accessToken);
+                    }catch (Exception e){
+                        filterChain.doFilter(request, response);
+                        return;
+                    }
                 }
                 else{
                     // refresh-token is empty. should go to the login page.
