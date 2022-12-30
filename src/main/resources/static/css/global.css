@@ -1,0 +1,12 @@
+a:hover {
+  background-color: #F6F6F6;
+}
+
+#logout:hover{
+  background-color: #F6F6F6;
+  cursor: pointer;
+}
+
+#logout.bi::before {
+  vertical-align: top;
+}

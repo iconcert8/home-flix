@@ -50,9 +50,9 @@ public class ScreenController {
         accessExpireCookie.setMaxAge(0);
         accessExpireCookie.setPath("/");
 
-//        response.addCookie(refreshCookie);
-//        response.addCookie(accessCookie);
-//        response.addCookie(accessExpireCookie);
+        response.addCookie(refreshCookie);
+        response.addCookie(accessCookie);
+        response.addCookie(accessExpireCookie);
 
         return mv;
     }

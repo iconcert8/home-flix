@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig{
 
     public static String[] ALLOW_URLS = {
-            "/", "/screen/**", "/login/**", "/favicon.ico", "/img/**"
+            "/", "/screen/**", "/login/**", "/favicon.ico", "/img/**", "/css/**"
     };
     private final JwtTokenProvider tokenProvider;
 
