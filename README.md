@@ -1,8 +1,8 @@
+![HOMEFLIX](https://user-images.githubusercontent.com/51566869/210201171-55c8770c-4348-49de-9c7c-b14ece64f9f9.png)
+
 # home-flix
 
 Let's watch videos of home computers everywhere.
-
-![다운로드](https://github.com/iconcert8/home-flix/issues/1#issue-1516081768)
 
 PC에 있는 동영상을 웹으로 접근하여 시청할 수 있도록 하는 서버
 
