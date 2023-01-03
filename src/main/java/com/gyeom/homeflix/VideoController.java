@@ -63,7 +63,7 @@ public class VideoController {
     public ResponseEntity<ResourceRegion> stream(@RequestHeader HttpHeaders reqHeaders, @PathVariable(value = "path") String path) throws IOException {
         String[] ps = path.split(PATH_DELIMITER);
         if(!videoReader.exists(ps)) {log.error("Not exists file '{}'.", Arrays.toString(ps)); return ResponseEntity.notFound().build();}
-        if(!videoReader.isVideo(ps)) {log.error("Not video '{}'.", Arrays.toString(ps)); return ResponseEntity.noContent().build();}
+        if(!videoReader.isVideo(ps)) {log.error("Not video '{}'.", Arrays.toString(ps)); return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();}
 
         FileUrlResource resource = new FileUrlResource(videoReader.toSourcePath(ps));
         ResourceRegion resourceRegion = resourceRegion(resource, reqHeaders);
@@ -82,12 +82,12 @@ public class VideoController {
     public ResponseEntity<InputStreamResource> subtitle(@PathVariable("path") String path){
         String[] splitPath = path.split(VideoController.PATH_DELIMITER);
         String filename = splitPath[splitPath.length-1];
-        if(filename.lastIndexOf('.') == -1) return ResponseEntity.noContent().build();
+        if(filename.lastIndexOf('.') == -1) return ResponseEntity.notFound().build();
 
         splitPath[splitPath.length - 1] = filename.substring(0, filename.lastIndexOf('.')) + ".vtt";;
 
         File file = new File(videoReader.toSourcePath(splitPath));
-        if(!file.exists()) return ResponseEntity.noContent().build();
+        if(!file.exists()) return ResponseEntity.notFound().build();
         try {
             return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(new InputStreamResource(new FileInputStream(file)));
         } catch (FileNotFoundException e) {
