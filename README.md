@@ -9,14 +9,18 @@ PC에 있는 동영상을 웹으로 접근하여 시청할 수 있도록 하는 
 ## 실행 화면
 
 ### 로그인
+- 최초 로그인 (username, password)는 (admin, 1234)이다.
+- 실행파일이 있는 경로에 home-flix-users.json을 수정하여 (username, password)를 관리할 수 있다.
 <img width="553" alt="homeflix-login" src="https://user-images.githubusercontent.com/51566869/210688263-5827d558-8f3b-4185-a8cc-c37969327adc.png">
 
 ### 폴더 목록
+- 실핼파일의 경로를 root로 잡고 하위 파일들을 보여준다.
+- 폴더와 동영상(mp4, mkv)파일만 보여준다.
 <img width="554" alt="homflix-videos" src="https://user-images.githubusercontent.com/51566869/210688444-c6c9476d-860e-4a65-be48-9cee9bd885a3.png">
 
 ### 동영상 재생
+- 브라우저에 따라, mkv 확장자 동영상은 실행이 안될 수 있다. mp4로 인코딩을 추천한다.
 <img width="551" alt="homflix-video" src="https://user-images.githubusercontent.com/51566869/210688498-35acfb77-de67-4225-9fba-fc8ff2d3cd14.png">
-
 
 
 ## 실행 방법
