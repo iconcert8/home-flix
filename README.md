@@ -6,6 +6,19 @@ Let's watch videos of home computers everywhere.
 
 PC에 있는 동영상을 웹으로 접근하여 시청할 수 있도록 하는 서버
 
+## 실행 화면
+
+### 로그인
+<img width="553" alt="homeflix-login" src="https://user-images.githubusercontent.com/51566869/210688263-5827d558-8f3b-4185-a8cc-c37969327adc.png">
+
+### 폴더 목록
+<img width="554" alt="homflix-videos" src="https://user-images.githubusercontent.com/51566869/210688444-c6c9476d-860e-4a65-be48-9cee9bd885a3.png">
+
+### 동영상 재생
+<img width="551" alt="homflix-video" src="https://user-images.githubusercontent.com/51566869/210688498-35acfb77-de67-4225-9fba-fc8ff2d3cd14.png">
+
+
+
 ## 실행 방법
 
 1. application.yml 수정
