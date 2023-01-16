@@ -67,7 +67,7 @@ subtitle file(.vtt)
 
 <img width="551" alt="homflix-video" src="https://user-images.githubusercontent.com/51566869/210688498-35acfb77-de67-4225-9fba-fc8ff2d3cd14.png">
 
-## Quick Start
+## 🛫Quick Start
 
 1. application.yml 수정
 
