@@ -21,4 +21,4 @@ spring:
 jwt:
   secret: "TjarB28fS3R5siqyGYvqAQUgFfCasf7AKERkWrg5GudM"
   access-token-expireTime: 7200000 #2hours
-  refresh-token-expireTime: 2592000000 #30days
+  refresh-token-expireTime: 7776000000 #90days

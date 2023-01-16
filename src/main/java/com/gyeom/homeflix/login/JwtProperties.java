@@ -18,7 +18,7 @@ public class JwtProperties {
     public static long ACCESS_TOKEN_EXPIRATION_TIME = ONE_HOURS*2;
     @Value("${jwt.access-token-expireTime}")
     public void setACCESS_TOKEN_EXPIRATION_TIME(long value){JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME = value;}
-    public static long REFRESH_TOKEN_EXPIRATION_TIME = ONE_DAY*30;
+    public static long REFRESH_TOKEN_EXPIRATION_TIME = ONE_DAY * 30;
     @Value("${jwt.refresh-token-expireTime}")
     public void setREFRESH_TOKEN_EXPIRATION_TIME(long value){JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME = value;}
     public static final String ACCESS_TOKEN_HEADER = "access_token";
