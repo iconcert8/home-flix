@@ -57,8 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }catch (Exception e){
                         // refresh-token is empty. should go to the login page.
                         request.setAttribute(JwtProperties.REQUIERED_LOGIN, true);
-                        filterChain.doFilter(request, response);
-                        return;
                     }
                 }
                 else{

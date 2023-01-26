@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class LoginController {
@@ -27,7 +25,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequestDTO requestDTO, HttpServletResponse response) {
-        Map<String, Object> body = new HashMap<>();
 
         try{
             TokenInfo tokenInfo = loginService.login(requestDTO.getUsername(), requestDTO.getPassword());
@@ -42,14 +39,12 @@ public class LoginController {
             response.addCookie(JwtTokenProvider.createAccessTokenCookie(tokenInfo.getAccessToken()));
             response.addCookie(JwtTokenProvider.createAccessTokenExpireTimeCookie(tokenInfo.getExpireDate()));
 
-            body.put("status", HttpStatus.OK.value());
-            return ResponseEntity.ok().body(body);
+            return ResponseEntity.ok().build();
         }catch (AuthenticationException e){
             log.error("Auth exception, " + e.getMessage());
         }
 
-        body.put("status", HttpStatus.FORBIDDEN.value());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     //    @GetMapping("/refresh_token")

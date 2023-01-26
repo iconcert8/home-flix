@@ -2,6 +2,7 @@ package com.gyeom.homeflix;
 
 import com.gyeom.homeflix.login.JwtProperties;
 import com.gyeom.homeflix.video.FileDTO;
+import com.gyeom.homeflix.video.FileType;
 import com.gyeom.homeflix.video.screenDTO.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public class ScreenController {
     }
 
     @GetMapping(value = {"/login"})
-    public ModelAndView goLogin(HttpServletResponse response){
+    public ModelAndView goLogin(HttpServletRequest request, HttpServletResponse response){
         final String VIEW_LOGIN = "login.html";
         ModelAndView mv = new ModelAndView();
         mv.setViewName(VIEW_LOGIN);
@@ -58,9 +59,9 @@ public class ScreenController {
     }
 
     @GetMapping(value = {"/login/fail"})
-    public ModelAndView goLoginOnFail(HttpServletResponse response){
+    public ModelAndView goLoginOnFail(HttpServletRequest request, HttpServletResponse response){
         final String KEY_FAIL = "fail";
-        ModelAndView mv = goLogin(response);
+        ModelAndView mv = goLogin(request, response);
         mv.addObject(KEY_FAIL, true);
 
         return mv;
@@ -75,21 +76,32 @@ public class ScreenController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName(VIEW_VIDEO_LIST);
         mv.addObject(KEY_PATH, makeVideoListPathObject(path));
-        mv.addObject(KEY_LIST, makeVideoListListObject(path));
+        mv.addObject(KEY_LIST, makeVideoListObject(path));
         return mv;
     }
 
     @GetMapping(value = {"/video/{path}"})
-    public  ModelAndView goScreenStream(@PathVariable("path") String path, HttpServletRequest request){
+    public ModelAndView goScreenStream(@PathVariable("path") String path, HttpServletRequest request){
         final String VIEW_VIDEO_STREAM = "video_stream.html";
         final String KEY_STREAMURL = "streamUrl";
         final String KEY_PATH = "path";
         final String KEY_VIDEO_NAME = "name";
+        final String KEY_PREV = "prev";
+        final String KEY_NEXT = "next";
+        final String KEY_LIST = "list";
+
         ModelAndView mv = new ModelAndView();
         mv.setViewName(VIEW_VIDEO_STREAM);
         mv.addObject(KEY_STREAMURL, path);
         mv.addObject(KEY_VIDEO_NAME, makeVideoStreamNameObject(path));
         mv.addObject(KEY_PATH, makeVideoStreamPathObject(path));
+
+        List<FileDTO> list = makeVideoListObject(Optional.of(path.substring(0, path.lastIndexOf(VideoController.PATH_DELIMITER))));
+        FileDTO[] videos = list.stream().filter(f -> f.getType() == FileType.VIDEO).toArray(FileDTO[]::new);
+        int currentIdx = currentIdxInVideos(videos, makeVideoStreamNameObject(path));
+        mv.addObject(KEY_PREV, currentIdx > 0 ? videos[currentIdx-1] : null);
+        mv.addObject(KEY_NEXT, currentIdx < videos.length-1 ? videos[currentIdx+1] : null);
+        mv.addObject(KEY_LIST, videos);
         return mv;
     }
 
@@ -105,7 +117,7 @@ public class ScreenController {
         return pathList;
     }
 
-    private List<FileDTO> makeVideoListListObject(Optional<String> path){
+    private List<FileDTO> makeVideoListObject(Optional<String> path){
         ResponseEntity<List<FileDTO>> resEntity = videoController.list(path);
         if(resEntity.getStatusCode() == HttpStatus.OK){
             return resEntity.getBody();
@@ -128,5 +140,16 @@ public class ScreenController {
     private String makeVideoStreamNameObject(String path){
         String[] splitPath = path.split(VideoController.PATH_DELIMITER);
         return splitPath[splitPath.length-1];
+    }
+
+    private int currentIdxInVideos(FileDTO[] videos, String currentName){
+        int currentIdx = 0;
+        for(int i = 0; i < videos.length; i++){
+            if(videos[i].getName().equals(currentName)) {
+                currentIdx = i;
+                break;
+            }
+        }
+        return currentIdx;
     }
 }

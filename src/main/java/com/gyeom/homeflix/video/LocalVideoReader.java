@@ -24,17 +24,21 @@ public class LocalVideoReader implements VideoReader {
         File dir = new File(toSourcePath(path));
         if(dir.isFile()) return new ArrayList<>();
 
-        LinkedList<FileDTO> result = new LinkedList<>();
+        LinkedList<FileDTO> videos = new LinkedList<>();
+        LinkedList<FileDTO> folders = new LinkedList<>();
         File[] files = dir.listFiles();
         if(files == null) files = new File[0];
         for(File file : files){
             FileDTO dto = toFileDTO(file, path);
             if(dto != null){
-                if(dto.getType() == FileType.FOLDER) result.addFirst(dto);
-                else result.addLast(dto);
+                if(dto.getType() == FileType.FOLDER) folders.add(dto);
+                else videos.add(dto);
             }
         }
 
+        LinkedList<FileDTO> result = new LinkedList<>();
+        result.addAll(folders);
+        result.addAll(videos);
         return result;
     }
 
