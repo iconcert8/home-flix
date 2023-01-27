@@ -43,7 +43,7 @@
         <video id="video" style="width:100%; object-fit:fill;"
                th:src="@{/video/{dir}(dir=${streamUrl})}"
                controls autoplay controlsList="nodownload">
-            <track default th:src="@{/video/subtitle/{dir}(dir=${streamUrl})}"/>
+            <track id="subtitle" default th:src="@{/video/subtitle/{dir}(dir=${streamUrl})}"/>
         </video>
     </div>
 </div>
@@ -74,7 +74,8 @@
             currentIdx++;
             const nextObj = list[currentIdx];
             document.getElementById('title').innerHTML = nextObj.name;
-            document.getElementById('video').src = '/video/'+nextObj.path.join('&&');
+            document.getElementById('video').src = encodeURI('/video/'+nextObj.path.join('&&'));
+            document.getElementById('subtitle').src = encodeURI('/video/subtitle/'+nextObj.path.join('&&'));
             document.getElementById('name').innerHTML = nextObj.name;
             document.getElementById('nextButton').innerHTML = currentIdx < list.length-1
                 ? nextButtonHTML(list[currentIdx+1])
@@ -89,7 +90,7 @@
 
     function nextButtonHTML(obj){
         return "<a class='text-secondary' "
-                   + "href='/screen/video/" + obj.path.join('&&') +"' "
+                   + "href='/screen/video/" +  encodeURI(obj.path.join('&&')) +"' "
                    + "style='text-decoration:none; display:inline-block; width:100%;'> "
                    + "<i class='bi bi-arrow-right'></i> "
                 "</a> ";
@@ -97,7 +98,7 @@
 
     function prevButtonHTML(obj){
         return "<a class='text-secondary' "
-                   + "href='/screen/video/" + obj.path.join('&&') +"' "
+                   + "href='/screen/video/" +  encodeURI(obj.path.join('&&')) +"' "
                    + "style='text-decoration:none; display:inline-block; width:100%;'> "
                    + "<i class='bi bi-arrow-left'></i> "
                 "</a> ";
