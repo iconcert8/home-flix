@@ -6,7 +6,7 @@ Let's watch videos of home computers everywhere.
 
 PC에 있는 동영상을 웹으로 접근하여 시청할 수 있도록 하는 서버
 
-## Environment
+## Environment 
 
 - Java 11
 - JWT
